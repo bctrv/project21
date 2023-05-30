@@ -12,7 +12,7 @@ build: off
 install:
  
 
-  - java -jar ./artrfacts/app-order.jar &
+  - java -jar ./artrifacts/app-order.jar &
 
 build_script:
   - ./gradlew test -Dselenide.headless=true
