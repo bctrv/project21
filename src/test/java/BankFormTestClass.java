@@ -1,5 +1,3 @@
-import com.codeborne.selenide.Condition;
-import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import org.junit.jupiter.api.Test;
 
@@ -21,12 +19,54 @@ public class BankFormTestClass {
     }
 
     @Test
-    void negativeTest() {
+    void negativeTestName() {
         open("http://localhost:9999");
         SelenideElement form = $("form");
         form.$("[data-test-id=name] input").setValue("Name");
         form.$("[data-test-id=agreement]").click();
         form.$("button").click();
-        $("span.input__sub").shouldHave(exactText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы."));
+        $("[data-test-id='name'].input_invalid .input__sub").shouldHave(exactText("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы."));
+    }
+
+    @Test
+    void negativeTestNumber() {
+        open("http://localhost:9999");
+        SelenideElement form = $("form");
+        form.$("[data-test-id=name] input").setValue("Петров Василий");
+        form.$("[data-test-id=phone] input").setValue("Name");
+        form.$("[data-test-id=agreement]").click();
+        form.$("button").click();
+        $("[data-test-id='phone'].input_invalid .input__sub").shouldHave(exactText("Телефон указан неверно. Должно быть 11 цифр, например, +79012345678."));
+    }
+
+    @Test
+    void negativeTestEmptyName() {
+        open("http://localhost:9999");
+        SelenideElement form = $("form");
+        form.$("[data-test-id=name] input").setValue("");
+        form.$("[data-test-id=agreement]").click();
+        form.$("button").click();
+        $("[data-test-id='name'].input_invalid .input__sub").shouldHave(exactText("Поле обязательно для заполнения"));
+    }
+
+    @Test
+    void negativeTestEmptyPhone() {
+        open("http://localhost:9999");
+        SelenideElement form = $("form");
+        form.$("[data-test-id=name] input").setValue("Петров Василий");
+        form.$("[data-test-id=phone] input").setValue("");
+        form.$("[data-test-id=agreement]").click();
+        form.$("button").click();
+        $("[data-test-id='phone'].input_invalid .input__sub").shouldHave(exactText("Поле обязательно для заполнения"));
+    }
+
+    @Test
+    void checkboxTest() {
+        open("http://localhost:9999");
+        SelenideElement form = $("form");
+        form.$("[data-test-id=name] input").setValue("Петров Василий");
+        form.$("[data-test-id=phone] input").setValue("+79315738573");
+        form.$("button").click();
+        $("label").shouldHave(exactText("Я соглашаюсь с условиями обработки и использования моих персональных данных и разрешаю сделать запрос в бюро кредитных историй"));
     }
 }
